@@ -22,7 +22,6 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import StarIcon from '@mui/icons-material/StarBorder';
 
 import ThemeRegistry from "@/app/ThemeRegistry";
-import Footer from "@/components/Footer";
 
 const roboto = Roboto({ subsets: ['latin'], weight: ['400', '700'] })
 

@@ -27,7 +27,7 @@ const Episode = ({ params }: { params: { id: string } }) => {
                 setEpisode(res)
                 setLoading(false)
             })
-    }, [])
+    }, [params.id])
 
     const loadCharacters = () => {
         setLoadingCharacters(true)

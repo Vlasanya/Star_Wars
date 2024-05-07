@@ -23,7 +23,7 @@ const LocationDetails = ({ params }: { params: { id: string } }) => {
                 setLocation(res)
                 setLoading(false)
             })
-    }, [])
+    }, [params.id])
 
     if (isLoading) return <p>Loading...</p>
     if (!location) return <p>No info</p>

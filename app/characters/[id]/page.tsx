@@ -27,7 +27,7 @@ const Character = ({ params }: { params: { id: string } }) => {
                 setCharacter(res)
                 setLoading(false)
             })
-    }, [])
+    }, [params.id])
 
     if (isLoading) return <p>Loading...</p>
     if (!character) return <p>No info</p>

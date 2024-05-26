@@ -1,126 +1,131 @@
-'use client'
-import React from 'react';
-import { useRouter } from 'next/navigation'
-import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Grid from '@mui/material/Grid';
-import Stack from '@mui/material/Stack';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
+'use client';
 
-const Character = ({ params }: { params: { id: string } }) => {
-    const router = useRouter()
-    const [character, setCharacter] = React.useState<CharacterType | null>(null)
-    const [characters, setCharacters] = React.useState<CharacterType[]>([])
-    const [info, setInfo] = React.useState<InfoType | null>(null)
-    const [isLoading, setLoading] = React.useState(true)
-    const [isLoadingCharacters, setLoadingCharacters] = React.useState(true)
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Container, Spinner, Text, Box, Stack, Badge, Image, SimpleGrid, Link, Button } from '@chakra-ui/react';
+import { useParams } from 'next/navigation';
+import { useHeroes, Hero } from '../../../contexts/HeroContext';
+import { useEpisodes } from '../../../contexts/EpisodesContext';
+import { useStarships } from '../../../contexts/StarshipsContext'; // Імпорт useStarships
 
-    React.useEffect(() => {
-        fetch(`/api/character/${params.id}`)
-            .then((res) => res.json())
-            .then((res) => {
-                setCharacter(res)
-                setLoading(false)
-            })
-    }, [params.id])
-
-    if (isLoading) return <p>Loading...</p>
-    if (!character) return <p>No info</p>
-
-    return <main>
-        <Box
-            sx={{
-                bgcolor: 'background.paper',
-                pt: 8,
-                pb: 6,
-            }}
-        >
-            <Container maxWidth="sm">
-                <Typography
-                    component="h1"
-                    variant="h2"
-                    align="center"
-                    color="text.primary"
-                    gutterBottom
-                >
-                    {character.name}
-                </Typography>
-                <Typography variant="h5" align="center" color="text.secondary" paragraph>
-                    {character.status}
-                </Typography>
-                <Stack
-                    sx={{pt: 4}}
-                    direction="row"
-                    spacing={2}
-                    justifyContent="center"
-                >
-                    <Button variant="contained" onClick={() => router.push('/characters')}>Back</Button>
-                </Stack>
-            </Container>
-            <Container sx={{ py: 8 }} maxWidth="md">
-                <Card
-                    sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
-                >
-                    <CardMedia
-                        component="div"
-                        sx={{
-                            pt: '56.25%',
-                        }}
-                        image={character.image}
-                    />
-                    <CardContent sx={{ flexGrow: 1 }}>
-                        <Typography gutterBottom variant="h5" component="h2">
-                            {character.name}
-                        </Typography>
-                        <Typography>
-                            {character.status}
-                        </Typography>
-                    </CardContent>
-                </Card>
-            </Container>
-            <Container sx={{ py: 8 }} maxWidth="md">
-                <Grid container spacing={4}>
-                    {characters.map((character) => (
-                        <Grid item key={`character-${character.id}-${character.type}`} xs={12} sm={6} md={4}>
-                            <Card
-                                sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
-                            >
-                                <CardMedia
-                                    component="div"
-                                    sx={{
-                                        pt: '56.25%',
-                                    }}
-                                    image={character.image}
-                                />
-                                <CardContent sx={{ flexGrow: 1 }}>
-                                    <Typography gutterBottom variant="h5" component="h2">
-                                        {character.name}
-                                    </Typography>
-                                    <Typography>
-                                        {character.status}
-                                    </Typography>
-                                    <Typography>
-                                        {character.species}
-                                    </Typography>
-                                    <Typography>
-                                        {character.type}
-                                    </Typography>
-                                    <Typography>
-                                        {character.gender}
-                                    </Typography>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                    ))}
-                </Grid>
-            </Container>
-        </Box>
-    </main>;
+interface Episode {
+  id: string;
+  title: string;
 }
 
-export default Character;
+interface Starship {
+  id: string;
+  name: string;
+}
+
+const HeroDetailPage = () => {
+  const { id } = useParams();
+  const { getHeroById, heroes } = useHeroes();
+  const { episodes: allEpisodes } = useEpisodes();
+  const { starships: allStarships } = useStarships(); // Використання useStarships
+  const [hero, setHero] = useState<Hero | null>(null);
+  const [episodes, setEpisodes] = useState<Episode[]>([]);
+  const [starships, setStarships] = useState<Starship[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (id && heroes.length > 0) {
+      const hero = getHeroById(id as string);
+      if (hero) {
+        setHero(hero);
+        const filmIds = hero.films.map(filmId => filmId.toString());
+        const starshipIds = hero.starships.map(starshipId => starshipId.toString());
+        loadEpisodes(filmIds);
+        loadStarships(starshipIds);
+      } else {
+        setLoading(false);
+      }
+    }
+  }, [id, heroes]);
+
+  const loadEpisodes = (filmIds: string[]) => {
+    const episodesData = filmIds
+      .map(filmId => allEpisodes.find(episode => episode.id === filmId))
+      .filter(Boolean) as Episode[];
+    setEpisodes(episodesData);
+  };
+
+  const loadStarships = (starshipIds: string[]) => {
+    const starshipsData = starshipIds
+      .map(starshipId => allStarships.find(starship => starship.id === starshipId))
+      .filter(Boolean) as Starship[];
+    setStarships(starshipsData);
+    setLoading(false);
+  };
+
+  if (loading) {
+    return <Spinner size="xl" />;
+  }
+
+  if (!hero) {
+    return <Text fontSize="xl">Hero not found</Text>;
+  }
+
+  return (
+    <Container maxW="container.md" py={8}>
+      <Box borderWidth="1px" borderRadius="lg" overflow="hidden" p={5} boxShadow="lg">
+        <Stack spacing={4} align="center" textAlign="center">
+          <Image
+            borderRadius="full"
+            boxSize="150px"
+            src={`https://starwars-visualguide.com/assets/img/characters/${id}.jpg`}
+            alt={hero.name}
+            fallbackSrc="https://via.placeholder.com/150"
+          />
+          <Text fontSize="4xl" fontWeight="bold">{hero.name}</Text>
+          <Badge colorScheme="green">{hero.gender}</Badge>
+          <Text fontSize="lg">Birth Year: {hero.birth_year}</Text>
+          <SimpleGrid columns={2} spacing={10}>
+            <Box>
+              <Text fontSize="md" fontWeight="bold">Eye Color:</Text>
+              <Text fontSize="md">{hero.eye_color}</Text>
+            </Box>
+            <Box>
+              <Text fontSize="md" fontWeight="bold">Hair Color:</Text>
+              <Text fontSize="md">{hero.hair_color}</Text>
+            </Box>
+            <Box>
+              <Text fontSize="md" fontWeight="bold">Height:</Text>
+              <Text fontSize="md">{hero.height} cm</Text>
+            </Box>
+            <Box>
+              <Text fontSize="md" fontWeight="bold">Mass:</Text>
+              <Text fontSize="md">{hero.mass} kg</Text>
+            </Box>
+            <Box>
+              <Text fontSize="md" fontWeight="bold">Skin Color:</Text>
+              <Text fontSize="md">{hero.skin_color}</Text>
+            </Box>
+          </SimpleGrid>
+          <Box>
+            <Text fontSize="md" fontWeight="bold">Films:</Text>
+            {episodes.map((episode) => (
+              <Link key={episode.id} href={`/episodes/${episode.id}`}>
+                <Button as="a" variant="link">
+                  {episode.title}
+                </Button>
+              </Link>
+            ))}
+          </Box>
+          <Box>
+            <Text fontSize="md" fontWeight="bold">Starships:</Text>
+            {starships.map((starship) => (
+              <Link key={starship.id} href={`/starships/${starship.id}`}>
+                <Button as="a" variant="link">
+                  {starship.name}
+                </Button>
+              </Link>
+            ))}
+          </Box>
+        </Stack>
+      </Box>
+    </Container>
+  );
+};
+
+export default HeroDetailPage;

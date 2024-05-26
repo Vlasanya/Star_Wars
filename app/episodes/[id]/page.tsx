@@ -1,140 +1,93 @@
-'use client'
-import React from 'react';
-import { useRouter } from 'next/navigation'
-import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Grid from '@mui/material/Grid';
-import Stack from '@mui/material/Stack';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
+'use client';
 
-const Episode = ({ params }: { params: { id: string } }) => {
-    const router = useRouter()
-    const [episode, setEpisode] = React.useState<EpisodeType | null>(null)
-    const [characters, setCharacters] = React.useState<CharacterType[]>([])
-    const [info, setInfo] = React.useState<InfoType | null>(null)
-    const [isLoading, setLoading] = React.useState(true)
-    const [isLoadingCharacters, setLoadingCharacters] = React.useState(true)
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Container, Spinner, Text, Box, Stack, Badge, SimpleGrid } from '@chakra-ui/react';
+import { useParams } from 'next/navigation';
+import HeroCard from '../../../components/HeroCard';
+import StarshipCard from '../../../components/StarshipCard';
 
-    React.useEffect(() => {
-        fetch(`/api/episode/${params.id}`)
-            .then((res) => res.json())
-            .then((res) => {
-                setEpisode(res)
-                setLoading(false)
-            })
-    }, [params.id])
-
-    const loadCharacters = () => {
-        setLoadingCharacters(true)
-        const getCharacters = (episode?.characters || []).map((character) => {
-            const characterId = character.split('/').pop()
-            return fetch(`/api/character/${characterId}`).then((res) => res.json())
-        })
-        Promise.all(getCharacters).then((responses: CharacterType[]) => {
-            setCharacters(responses)
-            setLoadingCharacters(false)
-        })
-    }
-
-    if (isLoading) return <p>Loading...</p>
-    if (!episode) return <p>No info</p>
-
-    return <main>
-        <Box
-            sx={{
-                bgcolor: 'background.paper',
-                pt: 8,
-                pb: 6,
-            }}
-        >
-            <Container maxWidth="sm">
-                <Typography
-                    component="h1"
-                    variant="h2"
-                    align="center"
-                    color="text.primary"
-                    gutterBottom
-                >
-                    {episode.name}
-                </Typography>
-                <Typography variant="h5" align="center" color="text.secondary" paragraph>
-                    {episode.episode}
-                </Typography>
-                <Stack
-                    sx={{pt: 4}}
-                    direction="row"
-                    spacing={2}
-                    justifyContent="center"
-                >
-                    <Button variant="contained" onClick={() => router.push('/episodes')}>Back</Button>
-                    <Button variant="outlined" onClick={loadCharacters}>Show Characters</Button>
-                </Stack>
-            </Container>
-            <Container sx={{ py: 8 }} maxWidth="md">
-                <Card
-                    sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
-                >
-                    <CardMedia
-                        component="div"
-                        sx={{
-                            pt: '56.25%',
-                        }}
-                        image="https://source.unsplash.com/random?wallpapers"
-                    />
-                    <CardContent sx={{ flexGrow: 1 }}>
-                        <Typography gutterBottom variant="h5" component="h2">
-                            {episode.name}
-                        </Typography>
-                        <Typography>
-                            {episode.air_date}
-                        </Typography>
-                    </CardContent>
-                </Card>
-            </Container>
-            <Container sx={{ py: 8 }} maxWidth="md">
-                <Grid container spacing={4}>
-                    {characters.map((character) => (
-                        <Grid item key={`episode-${character.id}-${character.type}`} xs={12} sm={6} md={4}>
-                            <Card
-                                sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
-                            >
-                                <CardMedia
-                                    component="div"
-                                    sx={{
-                                        pt: '56.25%',
-                                    }}
-                                    // image="https://source.unsplash.com/random?wallpapers"
-                                    image={character.image}
-                                />
-                                <CardContent sx={{ flexGrow: 1 }}>
-                                    <Typography gutterBottom variant="h5" component="h2">
-                                        {character.name}
-                                    </Typography>
-                                    <Typography>
-                                        {character.status}
-                                    </Typography>
-                                    <Typography>
-                                        {character.species}
-                                    </Typography>
-                                    <Typography>
-                                        {character.type}
-                                    </Typography>
-                                    <Typography>
-                                        {character.gender}
-                                    </Typography>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                    ))}
-                </Grid>
-            </Container>
-        </Box>
-    </main>;
+interface Episode {
+  id: string;
+  title: string;
+  release_date: string;
+  episode_id: string;
+  characters: string[];
+  starships: string[];
+  director: string;
+  producer: string;
+  opening_crawl: string;
 }
 
-export default Episode;
+const EpisodeDetailPage = () => {
+  const { id } = useParams();
+  const [episode, setEpisode] = useState<Episode | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (id) {
+      loadEpisode(id as string);
+    }
+  }, [id]);
+
+  const loadEpisode = async (id: string) => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`https://sw-api.starnavi.io/films/${id}`);
+      const data = response.data;
+      data.characters = data.characters.map((characterId: number) => characterId.toString());
+      data.starships = data.starships ? data.starships.map((starshipId: number) => starshipId.toString()) : [];
+      setEpisode(data);
+    } catch (error) {
+      console.error('Failed to load episode details:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return <Spinner size="xl" />;
+  }
+
+  if (!episode) {
+    return <Text fontSize="xl">Episode not found</Text>;
+  }
+
+  return (
+    <Container maxW="container.md" py={8}>
+      <Box borderWidth="1px" borderRadius="lg" overflow="hidden" p={5} boxShadow="lg">
+        <Stack spacing={4} align="center" textAlign="center">
+          <Text fontSize="4xl" fontWeight="bold">{episode.title}</Text>
+          <Badge colorScheme="green">Episode {episode.episode_id}</Badge>
+          <Text fontSize="lg">Director: {episode.director}</Text>
+          <Text fontSize="lg">Producer: {episode.producer}</Text>
+          <Text fontSize="lg">Release Date: {episode.release_date}</Text>
+          <Text fontSize="lg">Opening Crawl:</Text>
+          <Text fontStyle="italic">{episode.opening_crawl}</Text>
+          <Text fontWeight="bold" mt={4}>Characters:</Text>
+          <SimpleGrid columns={2} spacing={10}>
+            <Box>
+              <Stack spacing={4}>
+                {episode.characters.map((characterId) => (
+                  <HeroCard key={characterId} id={characterId} />
+                ))}
+              </Stack>
+            </Box>
+          </SimpleGrid>
+          <Text fontWeight="bold" mt={4}>Starships:</Text>
+          <SimpleGrid columns={2} spacing={10}>
+            <Box>
+              <Stack spacing={4}>
+                {episode.starships.map((starshipId) => (
+                  <StarshipCard key={starshipId} id={starshipId} />
+                ))}
+              </Stack>
+            </Box>
+          </SimpleGrid>
+        </Stack>
+      </Box>
+    </Container>
+  );
+};
+
+export default EpisodeDetailPage;

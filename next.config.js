@@ -1,5 +1,4 @@
-
-const API_URL = process.env.API_URL 
+const API_URL = process.env.API_URL;
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -9,7 +8,7 @@ const nextConfig = {
                 source: '/api/:path*',
                 destination: `${API_URL}/:path*`,
             },
-        ]
+        ];
     },
     experimental: {
         serverActions: true,
@@ -17,6 +16,6 @@ const nextConfig = {
     images: {
         domains: ['source.unsplash.com'],
     },
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

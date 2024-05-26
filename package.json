@@ -9,13 +9,19 @@
         "lint": "next lint"
     },
     "dependencies": {
-        "@emotion/react": "^11.11.1",
-        "@emotion/styled": "^11.11.0",
+        "@chakra-ui/icons": "^2.1.1",
+        "@chakra-ui/react": "^2.8.2",
+        "@emotion/react": "^11.11.4",
+        "@emotion/styled": "^11.11.5",
         "@mui/icons-material": "^5.14.12",
         "@mui/material": "^5.14.12",
+        "axios": "^1.7.2",
+        "framer-motion": "^11.2.6",
         "next": "latest",
         "react": "latest",
-        "react-dom": "latest"
+        "react-dom": "latest",
+        "react-flow-renderer": "^10.3.17",
+        "react-icons": "^5.2.1"
     },
     "devDependencies": {
         "@types/node": "latest",

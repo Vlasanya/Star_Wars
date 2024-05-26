@@ -1,39 +1,34 @@
-'use client'
-import * as React from 'react';
-import Image from 'next/image';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
+'use client';
 
-export default function MediaCard({ heading, text }: { heading: string; text: string }) {
-    const src = 'https://source.unsplash.com/random';
-    return (
-        <Card>
-            <Image
-                alt="Random image"
-                src={src}
-                width={640}
-                height={480}
-                style={{
-                    maxWidth: '100%',
-                    height: '200px',
-                    objectFit: 'cover',
-                }}
-            />
-            <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                    {heading}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                    {text}
-                </Typography>
-            </CardContent>
-            <CardActions>
-                <Button size="small">Share</Button>
-                <Button size="small">Learn More</Button>
-            </CardActions>
-        </Card>
-    );
+import * as React from 'react';
+import { Box, Text, VStack } from '@chakra-ui/react';
+
+interface MediaCardProps {
+  heroName: string;
+  birthYear: string;
+  eyesColor: string;
+  gender: string;
+  hairColor: string;
+  height: string;
+  weight: string;
+  skinColor: string;
+  homeworld: string;
+  films: string[];
+  species: string[];
+  starships: string[];
+  vehicles: string[];
+}
+
+export default function MediaCard({
+  heroName
+}: MediaCardProps) {
+  return (
+    <Box borderWidth="1px" borderRadius="lg" overflow="hidden" p={4} boxShadow="md">
+      <VStack spacing={4} align="start">
+        <Text fontWeight="bold" fontSize="xl">
+          {heroName}
+        </Text>
+      </VStack>
+    </Box>
+  );
 }

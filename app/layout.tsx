@@ -22,8 +22,7 @@ import {
 import {
   FiMenu,
   FiHome,
-  FiStar,
-  FiClipboard,
+  FiUsers, FiFilm, FiAirplay,
   FiSettings,
   FiHelpCircle,
   FiLogOut,
@@ -36,8 +35,9 @@ const roboto = Roboto({ subsets: ['latin'], weight: ['400', '700'] });
 
 const LINKS = [
   { text: 'Home', href: '/', icon: FiHome },
-  { text: 'Starred', href: '/starred', icon: FiStar },
-  { text: 'Tasks', href: '/tasks', icon: FiClipboard },
+  { text: 'Characters', href: '/characters', icon: FiUsers },
+  { text: 'Episodes', href: '/episodes', icon: FiFilm },
+  { text: 'Starships', href: '/starships', icon: FiAirplay },
 ];
 
 const PLACEHOLDER_LINKS = [

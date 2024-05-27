@@ -1,5 +1,4 @@
-'use client';
-
+// StarshipContext.tsx
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -18,12 +17,12 @@ export interface Starship {
   hyperdrive_rating: string;
   MGLT: string;
   starship_class: string;
+  films: string[];
 }
 
 interface StarshipContextProps {
   starships: Starship[];
-  loadStarships: (page: number) => Promise<void>;
-  getStarshipById: (id: string) => Starship | undefined;
+  loadStarships: () => Promise<void>;
   hasMore: boolean;
 }
 
@@ -32,14 +31,11 @@ const StarshipContext = createContext<StarshipContextProps | undefined>(undefine
 export const StarshipProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [starships, setStarships] = useState<Starship[]>([]);
   const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
 
-  const loadStarships = async (page: number) => {
-    setLoading(true);
+  const loadStarships = async () => {
     try {
       const response = await axios.get(`https://sw-api.starnavi.io/starships/?page=${page}`);
-      console.log('Starships loaded:', response.data.results);
       setStarships((prev) => [
         ...prev,
         ...response.data.results.map((starship: Starship) => ({
@@ -50,24 +46,15 @@ export const StarshipProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       setHasMore(response.data.next !== null);
     } catch (error) {
       console.error('Failed to load starships:', error);
-    } finally {
-      setLoading(false);
     }
   };
 
   useEffect(() => {
-    loadStarships(page);
+    loadStarships();
   }, [page]);
 
-  const getStarshipById = (id: string) => {
-    const starship = starships.find(starship => starship.id === id);
-    console.log('Searching for starship with id:', id);
-    console.log('Found starship:', starship);
-    return starship;
-  };
-
   return (
-    <StarshipContext.Provider value={{ starships, loadStarships, getStarshipById, hasMore }}>
+    <StarshipContext.Provider value={{ starships, loadStarships, hasMore }}>
       {children}
     </StarshipContext.Provider>
   );

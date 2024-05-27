@@ -1,19 +1,5 @@
-'use client';
-
-import * as React from 'react';
-import { Box, Text, VStack } from '@chakra-ui/react';
-
-interface Episode {
-  id: string;
-  title: string;
-  release_date: string;
-  episode_id: string;
-  characters: string[];
-  starships: string[];
-  director: string;
-  producer: string;
-  opening_crawl: string;
-}
+import { Box, Text, Image } from '@chakra-ui/react';
+import { Episode } from '../contexts/EpisodesContext';
 
 interface EpisodeCardProps {
   episode: Episode;
@@ -21,13 +7,28 @@ interface EpisodeCardProps {
 
 const EpisodeCard: React.FC<EpisodeCardProps> = ({ episode }) => {
   return (
-    <Box borderWidth="1px" borderRadius="lg" overflow="hidden" p={4} boxShadow="md">
-      <VStack spacing={4} align="start">
-        <Text fontSize="2xl" fontWeight="bold">{episode.title}</Text>
-        <Text>Release Date: {episode.release_date}</Text>
-      </VStack>
+    <Box
+      borderWidth="1px"
+      borderRadius="lg"
+      overflow="hidden"
+      p={4}
+      textAlign="center"
+      bg="white"
+      _hover={{ bg: 'gray.100' }}
+    >
+      <Image
+        src={`https://starwars-visualguide.com/assets/img/films/${episode.id}.jpg`}
+        alt={episode.title}
+        mb={4}
+        borderRadius="md"
+        objectFit="cover"
+        boxSize="200px"
+        mx="auto"
+      />
+      <Text fontWeight="bold">{episode.title}</Text>
+      <Text fontSize="sm">{episode.release_date}</Text>
     </Box>
   );
-}
+};
 
 export default EpisodeCard;

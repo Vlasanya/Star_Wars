@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 interface HeroCardProps {
   id: string;
-  name: string;
+  name?: string; // Зробіть `name` необов'язковим, якщо це можливо
 }
 
 export default function HeroCard({ id, name }: HeroCardProps) {

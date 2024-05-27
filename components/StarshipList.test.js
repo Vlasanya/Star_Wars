@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Button, VStack } from '@chakra-ui/react';
 import Link from 'next/link';
-import { useEpisodes } from '../contexts/EpisodesContext';
-import EpisodeCard from './EpisodeCard';
+import { useStarships } from '../contexts/StarshipsContext';
+import StarshipCard from './StarshipCard';
 
-const EpisodeList = () => {
-  const { episodes, loadEpisodes, hasMore } = useEpisodes();
+const StarshipList = () => {
+  const { starships, loadStarships, hasMore } = useStarships();
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [isClient, setIsClient] = useState(false);
@@ -15,17 +15,21 @@ const EpisodeList = () => {
   }, []);
 
   useEffect(() => {
-    if (isClient && episodes.length === 0) {
-      loadEpisodes().then(() => setLoading(false)); // Видалено аргумент `page`
+    if (isClient) {
+      loadStarships(page).then(() => setLoading(false));
     }
-  }, [isClient, episodes.length, loadEpisodes]);
+  }, [page, isClient, loadStarships]);
+
+  if (!isClient) {
+    return null;
+  }
 
   return (
     <VStack spacing={4}>
-      {episodes.map((episode) => (
-        <Link key={episode.id} href={`/episodes/${episode.id}`} passHref>
+      {starships.map((starship) => (
+        <Link key={starship.id} href={`/starships/${starship.id}`} passHref>
           <Box w="full">
-            <EpisodeCard episode={episode} />
+            <StarshipCard id={starship.id} name={starship.name} />
           </Box>
         </Link>
       ))}
@@ -38,4 +42,4 @@ const EpisodeList = () => {
   );
 };
 
-export default EpisodeList;
+export default StarshipList;

@@ -1,31 +1,33 @@
-'use client';
-
-import * as React from 'react';
-import { Box, Image, Text, VStack, Link as ChakraLink } from '@chakra-ui/react';
-import Link from 'next/link';
+import { Box, Text, Image } from '@chakra-ui/react';
 
 interface StarshipCardProps {
   id: string;
   name: string;
 }
 
-export default function StarshipCard({ id, name }: StarshipCardProps) {
+const StarshipCard: React.FC<StarshipCardProps> = ({ id, name }) => {
   return (
-    <Link href={`/starships/${id}`} passHref>
-      <ChakraLink>
-        <Box borderWidth="1px" borderRadius="lg" overflow="hidden" p={2} boxShadow="md">
-          <VStack spacing={2} align="center">
-            <Image
-              borderRadius="full"
-              boxSize="100px"
-              src={`https://starwars-visualguide.com/assets/img/starships/${id}.jpg`}
-              alt={name}
-              fallbackSrc="https://via.placeholder.com/100"
-            />
-            <Text fontWeight="bold">{name}</Text>
-          </VStack>
-        </Box>
-      </ChakraLink>
-    </Link>
+    <Box
+      borderWidth="1px"
+      borderRadius="lg"
+      overflow="hidden"
+      p={4}
+      textAlign="center"
+      bg="white"
+      _hover={{ bg: 'gray.100' }}
+    >
+      <Image
+        src={`https://starwars-visualguide.com/assets/img/starships/${id}.jpg`}
+        alt={name}
+        mb={4}
+        borderRadius="md"
+        objectFit="cover"
+        boxSize="200px"
+        mx="auto"
+      />
+      <Text fontWeight="bold">{name}</Text>
+    </Box>
   );
-}
+};
+
+export default StarshipCard;

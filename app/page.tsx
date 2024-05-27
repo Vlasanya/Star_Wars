@@ -58,7 +58,6 @@ export default function Page() {
                 <Heading as="h3" size="md">
                   {link.title}
                 </Heading>
-                <Text>{link.subheader}</Text>
                 <VStack align="center">
                   {link.description.map((line) => (
                     <Text key={line} fontSize="sm" textAlign="center">

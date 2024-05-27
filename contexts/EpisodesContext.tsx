@@ -12,11 +12,12 @@ export interface Episode {
   director: string;
   producer: string;
   opening_crawl: string;
+  starships: string[];
 }
 
 interface EpisodeContextProps {
   episodes: Episode[];
-  loadEpisodes: (page: number) => Promise<void>;
+  loadEpisodes: () => Promise<void>;
   hasMore: boolean;
 }
 
@@ -24,23 +25,30 @@ const EpisodeContext = createContext<EpisodeContextProps | undefined>(undefined)
 
 export const EpisodeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [episodes, setEpisodes] = useState<Episode[]>([]);
-  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
-  const [hasMore, setHasMore] = useState(true);
 
-  const loadEpisodes = async (page: number) => {
+  const loadEpisodes = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`https://sw-api.starnavi.io/films/?page=${page}`);
-      console.log('Episodes loaded:', response.data.results);
-      setEpisodes((prev) => [
-        ...prev,
-        ...response.data.results.map((episode: Episode) => ({
-          ...episode,
-          id: episode.episode_id.toString() // Ensure the ID is a string
-        }))
-      ]);
-      setHasMore(response.data.next !== null);
+      let page = 1;
+      let hasMore = true;
+      let allEpisodes: Episode[] = [];
+      
+      while (hasMore) {
+        const response = await axios.get(`https://sw-api.starnavi.io/films/?page=${page}`);
+        allEpisodes = [
+          ...allEpisodes,
+          ...response.data.results.map((episode: Episode) => ({
+            ...episode,
+            id: episode.episode_id.toString() // Ensure the ID is a string
+          }))
+        ];
+        hasMore = response.data.next !== null;
+        page++;
+      }
+
+      console.log('All Episodes loaded:', allEpisodes);
+      setEpisodes(allEpisodes);
     } catch (error) {
       console.error('Failed to load episodes:', error);
     } finally {
@@ -49,11 +57,11 @@ export const EpisodeProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   useEffect(() => {
-    loadEpisodes(page);
-  }, [page]);
+    loadEpisodes();
+  }, []);
 
   return (
-    <EpisodeContext.Provider value={{ episodes, loadEpisodes, hasMore }}>
+    <EpisodeContext.Provider value={{ episodes, loadEpisodes, hasMore: episodes.length > 0 }}>
       {children}
     </EpisodeContext.Provider>
   );

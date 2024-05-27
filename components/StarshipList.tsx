@@ -1,7 +1,8 @@
+// StarshipList.tsx
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Box, Button, VStack } from '@chakra-ui/react';
+import { Box, Button, SimpleGrid } from '@chakra-ui/react';
 import Link from 'next/link';
 import { useStarships } from '../contexts/StarshipsContext';
 import StarshipCard from './StarshipCard';
@@ -18,9 +19,9 @@ const StarshipList = () => {
 
   useEffect(() => {
     if (isClient) {
-      loadStarships(page);
+      loadStarships();
     }
-  }, [page, isClient]);
+  }, [page, isClient, loadStarships]);
 
   useEffect(() => {
     setLoading(false);
@@ -31,7 +32,7 @@ const StarshipList = () => {
   }
 
   return (
-    <VStack spacing={4}>
+    <SimpleGrid columns={[1, 2, 3, 4]} spacing={4}>
       {starships.map((starship) => (
         <Link key={starship.id} href={`/starships/${starship.id}`} passHref>
           <Box w="full">
@@ -44,7 +45,7 @@ const StarshipList = () => {
           Load More
         </Button>
       )}
-    </VStack>
+    </SimpleGrid>
   );
 };
 

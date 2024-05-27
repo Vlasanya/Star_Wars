@@ -43,10 +43,8 @@ const HeroGraph = () => {
       };
     }).filter(Boolean) as Node[];
 
-    console.log('Starship IDs:', hero.starships);
     const starshipNodes: Node[] = hero.starships.map((starshipId: string | number, index: number) => {
       const starship = starships.find((ss: Starship) => ss.id === starshipId.toString());
-      console.log(`Finding Starship ID ${starshipId}:`, starship);
       if (!starship) return null;
 
       return {
@@ -78,9 +76,6 @@ const HeroGraph = () => {
   useEffect(() => {
     if (id && heroes.length > 0 && starships.length > 0) {
       const hero = getHeroById(id as string);
-      console.log('Hero:', hero);  // Debugging line
-      console.log('Episodes:', episodes);  // Debugging line
-      console.log('Starships:', starships);  // Debugging line
 
       if (hero) {
         generateGraph(hero);

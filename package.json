@@ -3,62 +3,62 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-      "dev": "next dev",
-      "build": "next build",
-      "start": "next start",
-      "lint": "next lint",
-      "test": "jest"
+        "dev": "next dev",
+        "build": "next build",
+        "start": "next start",
+        "lint": "next lint",
+        "test": "jest"
     },
     "dependencies": {
-      "@chakra-ui/icons": "^2.1.1",
-      "@chakra-ui/react": "^2.8.2",
-      "@emotion/react": "^11.11.4",
-      "@emotion/styled": "^11.11.5",
-      "@mui/icons-material": "^5.14.12",
-      "@mui/material": "^5.14.12",
-      "axios": "^1.7.2",
-      "framer-motion": "^11.2.6",
-      "next": "latest",
-      "react": "latest",
-      "react-dom": "latest",
-      "react-flow-renderer": "^10.3.17",
-      "react-icons": "^5.2.1"
+        "@chakra-ui/icons": "^2.1.1",
+        "@chakra-ui/react": "^2.8.2",
+        "@emotion/react": "^11.11.4",
+        "@emotion/styled": "^11.11.5",
+        "@mui/icons-material": "^5.14.12",
+        "@mui/material": "^5.14.12",
+        "axios": "^1.7.2",
+        "framer-motion": "^11.2.6",
+        "next": "latest",
+        "react": "latest",
+        "react-dom": "latest",
+        "react-flow-renderer": "^10.3.17",
+        "react-icons": "^5.2.1"
     },
     "devDependencies": {
-      "@babel/core": "^7.24.6",
-      "@babel/preset-env": "^7.24.6",
-      "@babel/preset-react": "^7.24.6",
-      "@babel/preset-typescript": "^7.24.6",
-      "@testing-library/jest-dom": "^6.4.5",
-      "@testing-library/react": "^15.0.7",
-      "@testing-library/user-event": "^14.5.2",
-      "@types/jest": "^29.5.12",
-      "@types/node": "latest",
-      "@types/react": "latest",
-      "@types/react-dom": "latest",
-      "autoprefixer": "^10.4.19",
-      "babel-jest": "^29.7.0",
-      "eslint": "latest",
-      "eslint-config-next": "latest",
-      "identity-obj-proxy": "^3.0.0",
-      "jest": "^29.7.0",
-      "jest-environment-jsdom": "^29.7.0",
-      "postcss": "latest",
-      "tailwindcss": "latest",
-      "typescript": "latest"
+        "@babel/core": "^7.24.6",
+        "@babel/preset-env": "^7.24.6",
+        "@babel/preset-react": "^7.24.6",
+        "@babel/preset-typescript": "^7.24.6",
+        "@testing-library/jest-dom": "^6.4.5",
+        "@testing-library/react": "^15.0.7",
+        "@testing-library/user-event": "^14.5.2",
+        "@types/jest": "^29.5.12",
+        "@types/node": "latest",
+        "@types/react": "latest",
+        "@types/react-dom": "latest",
+        "autoprefixer": "^10.4.19",
+        "babel-jest": "^29.7.0",
+        "eslint": "latest",
+        "eslint-config-next": "latest",
+        "identity-obj-proxy": "^3.0.0",
+        "jest": "^29.7.0",
+        "jest-environment-jsdom": "^29.7.0",
+        "postcss": "latest",
+        "tailwindcss": "latest",
+        "typescript": "latest"
     },
     "jest": {
-      "setupFilesAfterEnv": ["<rootDir>/jest.setup.js"],
-      "testEnvironment": "jest-environment-jsdom",
-      "transform": {
-        "^.+\\.(js|jsx|ts|tsx)$": "babel-jest"
-      },
-      "moduleNameMapper": {
-        "\\.(css|less|scss|sass)$": "identity-obj-proxy"
-      },
-      "transformIgnorePatterns": [
-        "/node_modules/"
-      ]
+        "transformIgnorePatterns": [
+            "[/\\\\\\\\]node_modules[/\\\\\\\\](?!(@amcharts)\\\\/).+\\\\.(js|jsx|ts|tsx)$"
+        ],
+        "transform": {
+            "^.+\\.(js|jsx|ts|tsx)$": "babel-jest"
+        }
+    },
+    
+    "babel": {
+        "plugins": [
+            "@babel/plugin-syntax-jsx"
+        ]
     }
-  }
-  
+}

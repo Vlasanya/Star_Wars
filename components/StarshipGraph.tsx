@@ -55,8 +55,6 @@ const StarshipGraph = () => {
   useEffect(() => {
     if (id && starships.length > 0) {
       const starship = starships.find((ss: Starship) => ss.id === id as string);
-      console.log('Starship:', starship);  // Debugging line
-      console.log('Episodes:', episodes);  // Debugging line
 
       if (starship) {
         generateGraph(starship);

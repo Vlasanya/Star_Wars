@@ -16,7 +16,7 @@ const EpisodeList = () => {
 
   useEffect(() => {
     if (isClient && episodes.length === 0) {
-      loadEpisodes().then(() => setLoading(false)); // Видалено аргумент `page`
+      loadEpisodes().then(() => setLoading(false));
     }
   }, [isClient, episodes.length, loadEpisodes]);
 

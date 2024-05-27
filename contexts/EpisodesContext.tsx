@@ -40,14 +40,12 @@ export const EpisodeProvider: React.FC<{ children: React.ReactNode }> = ({ child
           ...allEpisodes,
           ...response.data.results.map((episode: Episode) => ({
             ...episode,
-            id: episode.episode_id.toString() // Ensure the ID is a string
+            id: episode.episode_id.toString()
           }))
         ];
         hasMore = response.data.next !== null;
         page++;
       }
-
-      console.log('All Episodes loaded:', allEpisodes);
       setEpisodes(allEpisodes);
     } catch (error) {
       console.error('Failed to load episodes:', error);

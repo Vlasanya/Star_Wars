@@ -78,14 +78,11 @@ const EpisodeGraph = () => {
   useEffect(() => {
     if (id && episodes.length > 0 && starships.length > 0 && heroes.length > 0) {
       const episode = episodes.find((ep: Episode) => ep.id === id as string);
-      console.log('Episode:', episode);  // Debugging line
 
       if (episode) {
         generateGraph(episode, starships, heroes);
         setLoading(false);
       }
-    } else {
-      // Add logic here if needed
     }
   }, [id, episodes, starships, heroes, generateGraph]);
 

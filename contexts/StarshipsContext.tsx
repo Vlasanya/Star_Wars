@@ -1,4 +1,3 @@
-// StarshipContext.tsx
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -46,7 +45,7 @@ export const StarshipProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           ...prev,
           ...response.data.results.map((starship: Starship) => ({
             ...starship,
-            id: starship.id.toString() // Ensure the ID is a string
+            id: starship.id.toString() 
           }))
         ]);
         setNextPage(response.data.next);

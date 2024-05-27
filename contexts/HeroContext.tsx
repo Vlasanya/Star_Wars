@@ -43,7 +43,7 @@ export const HeroProvider: React.FC<{ children: React.ReactNode }> = ({ children
         ...prev,
         ...response.data.results.map((hero: any) => ({
           ...hero,
-          id: hero.id.toString() // Ensure the ID is a string
+          id: hero.id.toString()
         }))
       ]);
       setHasMore(response.data.next !== null);
@@ -60,8 +60,6 @@ export const HeroProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const getHeroById = (id: string) => {
     const hero = heroes.find(hero => hero.id === id);
-    console.log('Searching for hero with id:', id);
-    console.log('Found hero:', hero);
     return hero;
   };
 

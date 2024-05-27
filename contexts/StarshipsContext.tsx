@@ -33,21 +33,31 @@ export const StarshipProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
+  const [nextPage, setNextPage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+
   const loadStarships = async () => {
-    try {
-      const response = await axios.get(`https://sw-api.starnavi.io/starships/?page=${page}`);
-      setStarships((prev) => [
-        ...prev,
-        ...response.data.results.map((starship: Starship) => ({
-          ...starship,
-          id: starship.id.toString() // Ensure the ID is a string
-        }))
-      ]);
-      setHasMore(response.data.next !== null);
-    } catch (error) {
-      console.error('Failed to load starships:', error);
+    if (!loading && (nextPage || page === 1)) {
+      setLoading(true);
+      try {
+        const response = await axios.get(`https://sw-api.starnavi.io/starships/?page=${nextPage || page}`);
+        setStarships((prev) => [
+          ...prev,
+          ...response.data.results.map((starship: Starship) => ({
+            ...starship,
+            id: starship.id.toString() // Ensure the ID is a string
+          }))
+        ]);
+        setNextPage(response.data.next);
+      } catch (error) {
+        console.error('Failed to load starships:', error);
+      } finally {
+        setLoading(false);
+      }
     }
   };
+  
 
   useEffect(() => {
     loadStarships();
